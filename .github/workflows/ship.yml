@@ -13,14 +13,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build with Buildozer
-        uses: kivy/buildozer-action@v1
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
         with:
           command: android debug
-          p4a_branch: master
           buildozer_version: stable
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: PolyMath-APK
-          path: bin/*.apk
+          path: ${{ steps.buildozer.outputs.filename }}
