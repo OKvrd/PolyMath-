@@ -12,15 +12,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          command: android debug
-          buildozer_version: stable
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential ccache git libffi-dev libssl-dev python3-pip python3-venv openjdk-17-jdk zip unzip
+          pip3 install --upgrade buildozer cython==0.29.36 virtualenv
+
+      - name: Build with Buildozer
+        run: |
+          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+          export PATH=$JAVA_HOME/bin:$PATH
+          buildozer -v android debug
+        env:
+          ANDROID_HOME: ${{ github.workspace }}/.buildozer/android/platform/android-sdk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: PolyMath-APK
-          path: ${{ steps.buildozer.outputs.filename }}
+          path: bin/*.apk
