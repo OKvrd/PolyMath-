@@ -12,7 +12,7 @@ on:
 
 jobs:
   detect:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       has_python: ${{ steps.check.outputs.has_python }}
       has_web: ${{ steps.check.outputs.has_web }}
